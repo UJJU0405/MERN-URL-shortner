@@ -1,0 +1,69 @@
+client/package.json
+json
+Copy
+Edit
+{
+  "name": "url-shortener-client",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  }
+}
+client/src/App.js
+jsx
+Copy
+Edit
+import React, { useState } from "react";
+import axios from "axios";
+
+function App() {
+  const [longUrl, setLongUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/api/shorten", { longUrl });
+      setShortUrl(res.data.shortUrl);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>URL Shortener</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={longUrl}
+          onChange={(e) => setLongUrl(e.target.value)}
+          placeholder="Enter your long URL"
+          style={{ width: "300px", padding: "8px" }}
+        />
+        <button type="submit" style={{ padding: "8px 12px", marginLeft: "5px" }}>
+          Shorten
+        </button>
+      </form>
+
+      {shortUrl && (
+        <p>
+          Short URL:{" "}
+          <a href={shortUrl} target="_blank" rel="noopener noreferrer">
+            {shortUrl}
+          </a>
+        </p>
+      )}
+    </div>
+  );
+}
+
+export default App;
